@@ -627,6 +627,16 @@
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var autoRunning = false;
+  var nextRoundTimer = null;
+  var lastAddKey = null;
+  var lastSubKey = null;
+
+  function cancelNextRound() {
+    if (nextRoundTimer) {
+      clearTimeout(nextRoundTimer);
+      nextRoundTimer = null;
+    }
+  }
 
   function pairSet() { return PAIR_SETS[state.pairSetIndex]; }
 
@@ -689,19 +699,37 @@
   // ---------- ADD MODE ----------
 
   function selectA(v) {
+    cancelNextRound();
     state.add.a = v;
     state.add.order = [];
     markActivePicker(pickerA, v);
     renderAddBlocks();
     updateAddEquation();
+    hint.classList.remove('done');
+    hint.textContent = 'Tap a block to count it: 1, 2, 3…';
   }
 
   function selectB(v) {
+    cancelNextRound();
     state.add.b = v;
     state.add.order = [];
     markActivePicker(pickerB, v);
     renderAddBlocks();
     updateAddEquation();
+    hint.classList.remove('done');
+    hint.textContent = 'Tap a block to count it: 1, 2, 3…';
+  }
+
+  function randomizeAdd() {
+    var a, b, key;
+    do {
+      a = Math.floor(Math.random() * 11);
+      b = Math.floor(Math.random() * 11);
+      key = a + ',' + b;
+    } while (key === lastAddKey && Math.random() < 0.85);
+    lastAddKey = key;
+    selectA(a);
+    selectB(b);
   }
 
   function renderAddBlocks() {
@@ -763,6 +791,7 @@
   }
 
   function celebrateAdd() {
+    if (state.mode !== 'add') return;
     var a = state.add.a, b = state.add.b, total = a + b;
     hint.classList.add('done');
     hint.textContent = '🎉 You added them all! ' + a + ' + ' + b + ' = ' + total;
@@ -771,6 +800,8 @@
       runConfetti();
       setTimeout(stopConfetti, 2600);
     }
+    cancelNextRound();
+    nextRoundTimer = setTimeout(randomizeAdd, 2400);
   }
 
   function autoAdd() {
@@ -792,6 +823,7 @@
   // ---------- SUBTRACT MODE ----------
 
   function selectStart(v) {
+    cancelNextRound();
     state.sub.start = v;
     if (state.sub.takeaway > v) state.sub.takeaway = v;
     state.sub.removed = [];
@@ -799,14 +831,31 @@
     buildTakeawayPicker();
     renderSubBlocks();
     updateSubEquation();
+    hint.classList.remove('done');
+    hint.textContent = 'Tap a block to take it away.';
   }
 
   function selectTakeaway(v) {
+    cancelNextRound();
     state.sub.takeaway = v;
     state.sub.removed = [];
     markActivePicker(pickerTakeaway, v);
     renderSubBlocks();
     updateSubEquation();
+    hint.classList.remove('done');
+    hint.textContent = 'Tap a block to take it away.';
+  }
+
+  function randomizeSub() {
+    var start, takeaway, key;
+    do {
+      start = 1 + Math.floor(Math.random() * 10);
+      takeaway = Math.floor(Math.random() * (start + 1));
+      key = start + ',' + takeaway;
+    } while (key === lastSubKey && Math.random() < 0.85);
+    lastSubKey = key;
+    selectStart(start);
+    selectTakeaway(takeaway);
   }
 
   function buildTakeawayPicker() {
@@ -877,6 +926,7 @@
   }
 
   function celebrateSub() {
+    if (state.mode !== 'sub') return;
     var start = state.sub.start, takeaway = state.sub.takeaway, remain = start - takeaway;
     hint.classList.add('done');
     hint.textContent = '🎉 You took away ' + takeaway + '! ' + start + ' − ' + takeaway + ' = ' + remain + ' left';
@@ -888,6 +938,8 @@
       runConfetti();
       setTimeout(stopConfetti, 2600);
     }
+    cancelNextRound();
+    nextRoundTimer = setTimeout(randomizeSub, 2400);
   }
 
   function autoSub() {
@@ -910,6 +962,7 @@
 
   function setMode(mode) {
     if (state.mode === mode) return;
+    cancelNextRound();
     state.mode = mode;
     autoRunning = false;
     var isAdd = mode === 'add';
