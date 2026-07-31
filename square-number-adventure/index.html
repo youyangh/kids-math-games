@@ -400,6 +400,33 @@
     color: white;
   }
 
+  .home-link {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: var(--card);
+    box-shadow: var(--shadow);
+    transition: transform 0.15s ease, color 0.15s ease;
+  }
+
+  .home-link:hover {
+    transform: translateY(-2px);
+    color: var(--ink);
+  }
+
+  .home-link:focus-visible {
+    outline: 3px solid var(--grape);
+    outline-offset: 2px;
+  }
+
   .hint {
     color: var(--ink-soft);
     font-size: 14px;
@@ -509,6 +536,8 @@
 </style>
 
 <div class="page">
+  <a class="home-link" href="../">&larr; All Games</a>
+
   <header>
     <h1>Square Number <span class="sq">Adventure</span></h1>
     <p class="subtitle" id="subtitle">Pick a number, then tap the blocks to count them!</p>
