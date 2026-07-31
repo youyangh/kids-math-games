@@ -795,7 +795,9 @@
     var a = state.add.a, b = state.add.b, total = a + b;
     hint.classList.add('done');
     hint.textContent = '🎉 You added them all! ' + a + ' + ' + b + ' = ' + total;
-    speak('Hooray! ' + a + ' plus ' + b + ' equals ' + total + '!');
+    setTimeout(function () {
+      if (state.mode === 'add') speak('Hooray! ' + a + ' plus ' + b + ' equals ' + total + '!');
+    }, 600);
     if (!reduceMotion) {
       runConfetti();
       setTimeout(stopConfetti, 2600);
@@ -933,7 +935,9 @@
     eqTotal.classList.remove('pop');
     void eqTotal.offsetWidth;
     eqTotal.classList.add('pop');
-    speak('Hooray! ' + start + ' take away ' + takeaway + ' equals ' + remain + '!');
+    setTimeout(function () {
+      if (state.mode === 'sub') speak('Hooray! ' + start + ' take away ' + takeaway + ' equals ' + remain + '!');
+    }, 600);
     if (!reduceMotion) {
       runConfetti();
       setTimeout(stopConfetti, 2600);
