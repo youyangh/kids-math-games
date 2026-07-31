@@ -1,0 +1,1159 @@
+<title>Add &amp; Take Away</title>
+<style>
+  :root {
+    --bg: #EAF6FF;
+    --bg-deep: #D8EDFF;
+    --ink: #2B2140;
+    --ink-soft: #5B5270;
+    --card: #FFFFFF;
+    --frame: #C9E4FF;
+    --coral: #FF6B6B;
+    --sun: #FFC93C;
+    --grass: #3FBF7F;
+    --sky: #4EA8DE;
+    --grape: #9B5DE5;
+    --pink: #FF8FB1;
+    --radius-lg: 28px;
+    --radius-md: 18px;
+    --radius-sm: 10px;
+    --shadow: 0 10px 24px -8px rgba(43, 33, 64, 0.25);
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #171130;
+    --bg-deep: #0F0B24;
+    --ink: #F2ECFF;
+    --ink-soft: #B8ACD9;
+    --card: #241C42;
+    --frame: #372A5C;
+    --coral: #FF8080;
+    --sun: #FFD666;
+    --grass: #5CD696;
+    --sky: #6EC0F2;
+    --grape: #B586F0;
+    --pink: #FFA8C4;
+    --shadow: 0 10px 28px -8px rgba(0, 0, 0, 0.55);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #171130;
+      --bg-deep: #0F0B24;
+      --ink: #F2ECFF;
+      --ink-soft: #B8ACD9;
+      --card: #241C42;
+      --frame: #372A5C;
+      --coral: #FF8080;
+      --sun: #FFD666;
+      --grass: #5CD696;
+      --sky: #6EC0F2;
+      --grape: #B586F0;
+      --pink: #FFA8C4;
+      --shadow: 0 10px 28px -8px rgba(0, 0, 0, 0.55);
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at 12% 8%, var(--bg-deep), transparent 42%),
+      radial-gradient(circle at 88% 92%, var(--bg-deep), transparent 45%),
+      var(--bg);
+    color: var(--ink);
+    font-family: 'Baloo 2', 'Segoe UI Rounded', 'SF Pro Rounded', ui-rounded, system-ui, -apple-system, sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 28px 16px 60px;
+  }
+
+  .page {
+    width: 100%;
+    max-width: 720px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .home-link {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: var(--card);
+    box-shadow: var(--shadow);
+    transition: transform 0.15s ease, color 0.15s ease;
+  }
+
+  .home-link:hover { transform: translateY(-2px); color: var(--ink); }
+  .home-link:focus-visible { outline: 3px solid var(--grape); outline-offset: 2px; }
+
+  header {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(28px, 6vw, 40px);
+    font-weight: 800;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+
+  h1 .op { color: var(--coral); }
+
+  .subtitle {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: clamp(14px, 3vw, 17px);
+    font-weight: 600;
+  }
+
+  .mode-toggle {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    background: var(--card);
+    border-radius: 999px;
+    padding: 6px;
+    box-shadow: var(--shadow);
+    align-self: center;
+  }
+
+  .mode-btn {
+    border: none;
+    border-radius: 999px;
+    padding: 10px 18px;
+    font-family: inherit;
+    font-weight: 800;
+    font-size: 15px;
+    cursor: pointer;
+    background: transparent;
+    color: var(--ink-soft);
+    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+  }
+
+  .mode-btn:hover { transform: translateY(-1px); }
+  .mode-btn:focus-visible { outline: 3px solid var(--grape); outline-offset: 2px; }
+
+  .mode-btn.active {
+    background: var(--grape);
+    color: white;
+  }
+
+  .pickers {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    box-shadow: var(--shadow);
+  }
+
+  .picker-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .picker-label {
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+
+  .picker {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .num-btn {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    border: none;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 19px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: inset 0 0 0 2px var(--frame);
+  }
+
+  .num-btn:hover { transform: translateY(-3px); }
+  .num-btn:active { transform: translateY(0) scale(0.94); }
+
+  .num-btn.active {
+    background: var(--sky);
+    color: white;
+    box-shadow: 0 6px 14px -4px var(--sky);
+    transform: translateY(-2px);
+  }
+
+  .num-btn:focus-visible {
+    outline: 3px solid var(--grape);
+    outline-offset: 2px;
+  }
+
+  .num-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  .stage {
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    padding: 22px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .equation {
+    font-size: clamp(26px, 7vw, 38px);
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .equation .eq-op { color: var(--coral); }
+
+  .equation .eq-total {
+    color: var(--coral);
+    transition: transform 0.2s ease;
+    display: inline-block;
+    min-width: 1.2em;
+    text-align: center;
+  }
+
+  .equation .eq-total.pop { animation: eqPop 0.35s ease; }
+
+  @keyframes eqPop {
+    0% { transform: scale(1); }
+    45% { transform: scale(1.35); }
+    100% { transform: scale(1); }
+  }
+
+  .quiz-prompt {
+    margin: 0;
+    font-size: clamp(20px, 5.5vw, 30px);
+    font-weight: 800;
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  .mat {
+    width: 100%;
+    background: var(--frame);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    box-shadow: var(--shadow);
+    transition: background 0.3s ease;
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .block {
+    width: clamp(38px, 9vw, 58px);
+    height: clamp(38px, 9vw, 58px);
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--frame);
+    background: var(--card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    padding: 0;
+    opacity: 0;
+    transform: scale(0.4);
+    animation: appear 0.35s ease forwards;
+    animation-delay: var(--d, 0s);
+  }
+
+  .block:focus-visible {
+    outline: 3px solid var(--grape);
+    outline-offset: 2px;
+  }
+
+  @keyframes appear {
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .block.filled {
+    border-color: var(--grass);
+  }
+
+  @keyframes fillPop {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.22); }
+    100% { transform: scale(1); }
+  }
+
+  .block .chip {
+    width: 74%;
+    height: 74%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.18);
+    animation: fillPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .block.removing .chip {
+    animation: removeChip 0.32s ease forwards;
+  }
+
+  @keyframes removeChip {
+    to { transform: scale(0); opacity: 0; }
+  }
+
+  .block .emoji {
+    font-size: clamp(16px, 4.5vw, 26px);
+    line-height: 1;
+  }
+
+  .block .num {
+    position: absolute;
+    bottom: -3px;
+    right: -3px;
+    font-size: 10px;
+    color: var(--ink);
+    background: var(--card);
+    border-radius: 50%;
+    width: 1.5em;
+    height: 1.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 1px var(--frame);
+  }
+
+  .hint {
+    color: var(--ink-soft);
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    min-height: 20px;
+  }
+
+  .hint.done {
+    color: var(--grass);
+    font-size: 17px;
+  }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .ctrl-btn {
+    border: none;
+    border-radius: 999px;
+    padding: 10px 18px;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    background: var(--bg);
+    color: var(--ink);
+    box-shadow: inset 0 0 0 2px var(--frame);
+    transition: transform 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .ctrl-btn:hover { transform: translateY(-2px); }
+  .ctrl-btn:active { transform: translateY(0) scale(0.96); }
+  .ctrl-btn:focus-visible { outline: 3px solid var(--grape); outline-offset: 2px; }
+
+  .ctrl-btn.primary {
+    background: var(--grass);
+    color: white;
+  }
+
+  .celebrate {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .celebrate canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .quiz-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .quiz-options {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .quiz-opt {
+    border: none;
+    border-radius: var(--radius-md);
+    min-width: 96px;
+    padding: 16px 10px;
+    font-family: inherit;
+    font-size: clamp(22px, 6vw, 30px);
+    font-weight: 800;
+    color: var(--ink);
+    background: var(--bg);
+    box-shadow: inset 0 0 0 3px var(--frame);
+    cursor: pointer;
+    font-variant-numeric: tabular-nums;
+    transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
+  }
+
+  .quiz-opt:hover { transform: translateY(-2px); }
+  .quiz-opt:focus-visible { outline: 3px solid var(--grape); outline-offset: 2px; }
+
+  .quiz-opt.correct {
+    background: var(--grass);
+    color: white;
+    animation: fillPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .quiz-opt.wrong {
+    background: var(--coral);
+    color: white;
+    animation: shake 0.4s ease;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+
+  .quiz-feedback {
+    margin: 0;
+    min-height: 24px;
+    font-weight: 700;
+    font-size: 16px;
+    text-align: center;
+    color: var(--ink-soft);
+  }
+
+  .quiz-score {
+    margin: 0;
+    font-weight: 800;
+    color: var(--ink);
+    font-size: 15px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .block, .equation .eq-total.pop, .quiz-opt.correct, .quiz-opt.wrong { animation: none !important; }
+  }
+</style>
+
+<div class="page">
+  <a class="home-link" href="../">&larr; All Games</a>
+
+  <header>
+    <h1>Add <span class="op">&amp;</span> Take Away</h1>
+    <p class="subtitle" id="subtitle">Pick two numbers, then tap the blocks to add them up!</p>
+  </header>
+
+  <div class="mode-toggle" role="tablist" aria-label="Choose game mode">
+    <button class="mode-btn active" id="modeAddBtn" type="button" role="tab" aria-selected="true">➕ Add</button>
+    <button class="mode-btn" id="modeSubBtn" type="button" role="tab" aria-selected="false">➖ Take Away</button>
+    <button class="mode-btn" id="modeQuizBtn" type="button" role="tab" aria-selected="false">❓ Quiz Time</button>
+  </div>
+
+  <div class="pickers" id="addPickers">
+    <div class="picker-row">
+      <span class="picker-label">First group</span>
+      <div class="picker" id="pickerA" role="group" aria-label="First number"></div>
+    </div>
+    <div class="picker-row">
+      <span class="picker-label">Second group</span>
+      <div class="picker" id="pickerB" role="group" aria-label="Second number"></div>
+    </div>
+  </div>
+
+  <div class="pickers" id="subPickers" style="display: none;">
+    <div class="picker-row">
+      <span class="picker-label">Start with</span>
+      <div class="picker" id="pickerStart" role="group" aria-label="Starting number"></div>
+    </div>
+    <div class="picker-row">
+      <span class="picker-label">Take away</span>
+      <div class="picker" id="pickerTakeaway" role="group" aria-label="Take away amount"></div>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="equation" id="equationWrap" aria-live="polite">
+      <span id="eqA">3</span>
+      <span class="eq-op" id="eqOp">+</span>
+      <span id="eqB">2</span>
+      <span>=</span>
+      <span class="eq-total" id="eqTotal">?</span>
+    </div>
+
+    <p class="quiz-prompt" id="quizPrompt" style="display: none;" aria-live="polite"></p>
+
+    <div class="mat" id="mat">
+      <div class="row" id="blockRow"></div>
+    </div>
+
+    <p class="hint" id="hint">Tap a block to count it: 1, 2, 3&hellip;</p>
+
+    <div class="controls" id="controlsRow">
+      <button class="ctrl-btn primary" id="autoBtn" type="button">▶️ Watch it add</button>
+      <button class="ctrl-btn" id="resetBtn" type="button">🔄 Reset blocks</button>
+      <button class="ctrl-btn" id="themeBtn" type="button">🔀 Different look</button>
+      <button class="ctrl-btn" id="soundBtn" type="button" aria-pressed="true">🔊 Sound on</button>
+    </div>
+
+    <div class="quiz-panel" id="quizPanel" style="display: none;">
+      <div class="quiz-options">
+        <button class="quiz-opt" id="quizOptA" type="button"></button>
+        <button class="quiz-opt" id="quizOptB" type="button"></button>
+      </div>
+      <p class="quiz-feedback" id="quizFeedback" aria-live="polite">&nbsp;</p>
+      <p class="quiz-score" id="quizScore">⭐ Stars: 0</p>
+    </div>
+  </div>
+</div>
+
+<div class="celebrate" id="celebrate">
+  <canvas id="confetti"></canvas>
+</div>
+
+<script>
+(function () {
+  var PALETTE = ['#FF6B6B', '#FFC93C', '#3FBF7F', '#4EA8DE', '#9B5DE5', '#FF8FB1'];
+
+  var PAIR_SETS = [
+    { name: 'Apples & Blueberries', a: { emoji: '🍎', color: '#FF6B6B' }, b: { emoji: '🫐', color: '#4EA8DE' } },
+    { name: 'Bunnies & Foxes', a: { emoji: '🐰', color: '#FF8FB1' }, b: { emoji: '🦊', color: '#FF9F4A' } },
+    { name: 'Stars & Moons', a: { emoji: '⭐', color: '#FFC93C' }, b: { emoji: '🌙', color: '#9B5DE5' } }
+  ];
+
+  var state = {
+    mode: 'add',
+    pairSetIndex: 0,
+    soundOn: true,
+    audioCtx: null,
+    add: { a: 3, b: 2, order: [] },
+    sub: { start: 5, takeaway: 2, removed: [] }
+  };
+
+  var quiz = {
+    kind: null,
+    lastKind: null,
+    a: null, b: null, start: null, takeaway: null,
+    correct: null,
+    stars: 0,
+    answered: false
+  };
+
+  var subtitle = document.getElementById('subtitle');
+  var modeAddBtn = document.getElementById('modeAddBtn');
+  var modeSubBtn = document.getElementById('modeSubBtn');
+  var modeQuizBtn = document.getElementById('modeQuizBtn');
+  var addPickers = document.getElementById('addPickers');
+  var subPickers = document.getElementById('subPickers');
+  var pickerA = document.getElementById('pickerA');
+  var pickerB = document.getElementById('pickerB');
+  var pickerStart = document.getElementById('pickerStart');
+  var pickerTakeaway = document.getElementById('pickerTakeaway');
+  var equationWrap = document.getElementById('equationWrap');
+  var eqA = document.getElementById('eqA');
+  var eqOp = document.getElementById('eqOp');
+  var eqB = document.getElementById('eqB');
+  var eqTotal = document.getElementById('eqTotal');
+  var quizPrompt = document.getElementById('quizPrompt');
+  var mat = document.getElementById('mat');
+  var blockRow = document.getElementById('blockRow');
+  var hint = document.getElementById('hint');
+  var controlsRow = document.getElementById('controlsRow');
+  var autoBtn = document.getElementById('autoBtn');
+  var resetBtn = document.getElementById('resetBtn');
+  var themeBtn = document.getElementById('themeBtn');
+  var soundBtn = document.getElementById('soundBtn');
+  var quizPanel = document.getElementById('quizPanel');
+  var quizOptA = document.getElementById('quizOptA');
+  var quizOptB = document.getElementById('quizOptB');
+  var quizFeedback = document.getElementById('quizFeedback');
+  var quizScore = document.getElementById('quizScore');
+  var confettiCanvas = document.getElementById('confetti');
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var autoRunning = false;
+
+  function pairSet() { return PAIR_SETS[state.pairSetIndex]; }
+
+  function getAudioCtx() {
+    if (!state.audioCtx) {
+      var Ctx = window.AudioContext || window.webkitAudioContext;
+      if (Ctx) state.audioCtx = new Ctx();
+    }
+    return state.audioCtx;
+  }
+
+  function beep(step, total) {
+    if (!state.soundOn) return;
+    var ctx = getAudioCtx();
+    if (!ctx) return;
+    if (ctx.state === 'suspended') ctx.resume();
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    var freq = 220 + (step / Math.max(total, 1)) * 440;
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.18, ctx.currentTime + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.22);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.24);
+  }
+
+  function speak(text) {
+    if (!state.soundOn || !window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    var utter = new SpeechSynthesisUtterance(text);
+    utter.rate = 0.95;
+    utter.pitch = 1.15;
+    window.speechSynthesis.speak(utter);
+  }
+
+  function buildNumberPicker(container, min, max, onSelect) {
+    container.innerHTML = '';
+    for (var i = min; i <= max; i++) {
+      (function (i) {
+        var btn = document.createElement('button');
+        btn.className = 'num-btn';
+        btn.type = 'button';
+        btn.textContent = i;
+        btn.dataset.v = i;
+        btn.addEventListener('click', function () { onSelect(i); });
+        container.appendChild(btn);
+      })(i);
+    }
+  }
+
+  function markActivePicker(container, value) {
+    container.querySelectorAll('.num-btn').forEach(function (b) {
+      b.classList.toggle('active', parseInt(b.dataset.v, 10) === value);
+    });
+  }
+
+  // ---------- ADD MODE ----------
+
+  function selectA(v) {
+    state.add.a = v;
+    state.add.order = [];
+    markActivePicker(pickerA, v);
+    renderAddBlocks();
+    updateAddEquation();
+  }
+
+  function selectB(v) {
+    state.add.b = v;
+    state.add.order = [];
+    markActivePicker(pickerB, v);
+    renderAddBlocks();
+    updateAddEquation();
+  }
+
+  function renderAddBlocks() {
+    var a = state.add.a, b = state.add.b;
+    blockRow.innerHTML = '';
+    var total = a + b;
+    for (var i = 0; i < total; i++) {
+      var block = document.createElement('button');
+      block.type = 'button';
+      block.className = 'block';
+      block.style.setProperty('--d', (i * 0.03) + 's');
+      block.dataset.index = i;
+      block.setAttribute('aria-label', 'Block ' + (i + 1) + ', not counted yet');
+      block.addEventListener('click', function () {
+        countAddBlock(parseInt(this.dataset.index, 10));
+      });
+      blockRow.appendChild(block);
+    }
+  }
+
+  function countAddBlock(index) {
+    var order = state.add.order;
+    if (order.indexOf(index) !== -1) return;
+    var seq = order.length + 1;
+    order.push(index);
+
+    var group = index < state.add.a ? pairSet().a : pairSet().b;
+    var block = blockRow.children[index];
+    block.classList.add('filled');
+    block.innerHTML = '<span class="chip" style="background:' + group.color + '"><span class="emoji">' + group.emoji + '</span></span><span class="num">' + seq + '</span>';
+    block.setAttribute('aria-label', 'Block counted, number ' + seq);
+
+    var total = state.add.a + state.add.b;
+    beep(seq, total);
+    speak(String(seq));
+    updateAddEquation(true);
+
+    if (seq === total) {
+      setTimeout(celebrateAdd, 250);
+    } else {
+      hint.textContent = seq + ' counted so far. Keep going!';
+    }
+  }
+
+  function updateAddEquation(animate) {
+    var a = state.add.a, b = state.add.b;
+    eqA.textContent = a;
+    eqOp.textContent = '+';
+    eqB.textContent = b;
+    var countedSoFar = state.add.order.length;
+    var total = a + b;
+    eqTotal.textContent = countedSoFar === 0 ? '?' : countedSoFar;
+    if (countedSoFar === total) eqTotal.textContent = total;
+    if (animate) {
+      eqTotal.classList.remove('pop');
+      void eqTotal.offsetWidth;
+      eqTotal.classList.add('pop');
+    }
+  }
+
+  function celebrateAdd() {
+    var a = state.add.a, b = state.add.b, total = a + b;
+    hint.classList.add('done');
+    hint.textContent = '🎉 You added them all! ' + a + ' + ' + b + ' = ' + total;
+    speak('Hooray! ' + a + ' plus ' + b + ' equals ' + total + '!');
+    if (!reduceMotion) {
+      runConfetti();
+      setTimeout(stopConfetti, 2600);
+    }
+  }
+
+  function autoAdd() {
+    if (autoRunning) return;
+    selectA(state.add.a);
+    selectB(state.add.b);
+    autoRunning = true;
+    var total = state.add.a + state.add.b;
+    var i = 0;
+    function step() {
+      if (!autoRunning || i >= total) { autoRunning = false; return; }
+      countAddBlock(i);
+      i++;
+      setTimeout(step, 420);
+    }
+    setTimeout(step, 300);
+  }
+
+  // ---------- SUBTRACT MODE ----------
+
+  function selectStart(v) {
+    state.sub.start = v;
+    if (state.sub.takeaway > v) state.sub.takeaway = v;
+    state.sub.removed = [];
+    markActivePicker(pickerStart, v);
+    buildTakeawayPicker();
+    renderSubBlocks();
+    updateSubEquation();
+  }
+
+  function selectTakeaway(v) {
+    state.sub.takeaway = v;
+    state.sub.removed = [];
+    markActivePicker(pickerTakeaway, v);
+    renderSubBlocks();
+    updateSubEquation();
+  }
+
+  function buildTakeawayPicker() {
+    buildNumberPicker(pickerTakeaway, 0, state.sub.start, selectTakeaway);
+    if (state.sub.takeaway > state.sub.start) state.sub.takeaway = state.sub.start;
+    markActivePicker(pickerTakeaway, state.sub.takeaway);
+  }
+
+  function renderSubBlocks() {
+    var start = state.sub.start;
+    var group = pairSet().a;
+    blockRow.innerHTML = '';
+    for (var i = 0; i < start; i++) {
+      (function (i) {
+        var block = document.createElement('button');
+        block.type = 'button';
+        block.className = 'block';
+        block.style.setProperty('--d', (i * 0.03) + 's');
+        block.dataset.index = i;
+        block.addEventListener('click', function () {
+          removeSubBlock(parseInt(this.dataset.index, 10));
+        });
+        blockRow.appendChild(block);
+        setTimeout(function () {
+          block.classList.add('filled');
+          block.innerHTML = '<span class="chip" style="background:' + group.color + '"><span class="emoji">' + group.emoji + '</span></span><span class="num">' + (i + 1) + '</span>';
+          block.setAttribute('aria-label', 'Block ' + (i + 1) + ', tap to take away');
+        }, i * 20 + 380);
+      })(i);
+    }
+  }
+
+  function removeSubBlock(index) {
+    var removed = state.sub.removed;
+    if (removed.indexOf(index) !== -1) return;
+    if (removed.length >= state.sub.takeaway) return;
+    var block = blockRow.children[index];
+    if (!block.classList.contains('filled')) return;
+
+    removed.push(index);
+    block.classList.add('removing');
+    var seq = removed.length;
+
+    beep(seq, state.sub.takeaway);
+    speak(String(seq));
+
+    setTimeout(function () {
+      block.classList.remove('filled', 'removing');
+      block.innerHTML = '';
+      block.setAttribute('aria-label', 'Block taken away');
+    }, 320);
+
+    if (seq === state.sub.takeaway) {
+      setTimeout(celebrateSub, 500);
+    } else {
+      hint.textContent = seq + ' taken away so far. Keep going!';
+    }
+    updateSubEquation();
+  }
+
+  function updateSubEquation() {
+    var start = state.sub.start, takeaway = state.sub.takeaway;
+    eqA.textContent = start;
+    eqOp.textContent = '−';
+    eqB.textContent = takeaway;
+    var removedSoFar = state.sub.removed.length;
+    eqTotal.textContent = removedSoFar === takeaway ? (start - takeaway) : '?';
+  }
+
+  function celebrateSub() {
+    var start = state.sub.start, takeaway = state.sub.takeaway, remain = start - takeaway;
+    hint.classList.add('done');
+    hint.textContent = '🎉 You took away ' + takeaway + '! ' + start + ' − ' + takeaway + ' = ' + remain + ' left';
+    eqTotal.classList.remove('pop');
+    void eqTotal.offsetWidth;
+    eqTotal.classList.add('pop');
+    speak('Hooray! ' + start + ' take away ' + takeaway + ' equals ' + remain + '!');
+    if (!reduceMotion) {
+      runConfetti();
+      setTimeout(stopConfetti, 2600);
+    }
+  }
+
+  function autoSub() {
+    if (autoRunning) return;
+    selectStart(state.sub.start);
+    selectTakeaway(state.sub.takeaway);
+    autoRunning = true;
+    var start = state.sub.start, takeaway = state.sub.takeaway;
+    var i = 0;
+    function step() {
+      if (!autoRunning || i >= takeaway) { autoRunning = false; return; }
+      removeSubBlock(start - 1 - i);
+      i++;
+      setTimeout(step, 550);
+    }
+    setTimeout(step, 700);
+  }
+
+  // ---------- MODE SWITCHING ----------
+
+  function setMode(mode) {
+    if (state.mode === mode) return;
+    state.mode = mode;
+    autoRunning = false;
+    var isAdd = mode === 'add';
+    var isSub = mode === 'sub';
+    var isQuiz = mode === 'quiz';
+
+    modeAddBtn.classList.toggle('active', isAdd);
+    modeSubBtn.classList.toggle('active', isSub);
+    modeQuizBtn.classList.toggle('active', isQuiz);
+    modeAddBtn.setAttribute('aria-selected', String(isAdd));
+    modeSubBtn.setAttribute('aria-selected', String(isSub));
+    modeQuizBtn.setAttribute('aria-selected', String(isQuiz));
+
+    addPickers.style.display = isAdd ? 'flex' : 'none';
+    subPickers.style.display = isSub ? 'flex' : 'none';
+    equationWrap.style.display = isQuiz ? 'none' : 'flex';
+    hint.style.display = isQuiz ? 'none' : 'block';
+    controlsRow.style.display = isQuiz ? 'none' : 'flex';
+    quizPrompt.style.display = isQuiz ? 'block' : 'none';
+    quizPanel.style.display = isQuiz ? 'flex' : 'none';
+
+    hint.classList.remove('done');
+
+    if (isAdd) {
+      subtitle.textContent = 'Pick two numbers, then tap the blocks to add them up!';
+      autoBtn.textContent = '▶️ Watch it add';
+      selectA(state.add.a);
+      selectB(state.add.b);
+    } else if (isSub) {
+      subtitle.textContent = 'Pick a start number, then tap blocks to take some away!';
+      autoBtn.textContent = '▶️ Watch it take away';
+      selectStart(state.sub.start);
+      selectTakeaway(state.sub.takeaway);
+    } else {
+      subtitle.textContent = 'Pick the right answer for each problem!';
+      newQuizQuestion();
+    }
+  }
+
+  // ---------- QUIZ MODE ----------
+
+  function pickQuizKind() {
+    var kind;
+    do {
+      kind = Math.random() < 0.5 ? 'add' : 'subtract';
+    } while (kind === quiz.lastKind && Math.random() < 0.7);
+    quiz.lastKind = kind;
+    return kind;
+  }
+
+  function updateQuizScore() {
+    quizScore.textContent = '⭐ Stars: ' + quiz.stars;
+  }
+
+  function renderQuizAddBlocks(a, b) {
+    blockRow.innerHTML = '';
+    var group = pairSet();
+    for (var i = 0; i < a + b; i++) {
+      (function (i) {
+        var block = document.createElement('div');
+        block.className = 'block';
+        block.style.setProperty('--d', (i * 0.02) + 's');
+        block.style.pointerEvents = 'none';
+        blockRow.appendChild(block);
+        var g = i < a ? group.a : group.b;
+        setTimeout(function () {
+          block.classList.add('filled');
+          block.innerHTML = '<span class="chip" style="background:' + g.color + '"><span class="emoji">' + g.emoji + '</span></span>';
+        }, i * 15 + 340);
+      })(i);
+    }
+  }
+
+  function renderQuizSubBlocks(start, takeaway) {
+    blockRow.innerHTML = '';
+    var group = pairSet().a;
+    var removedFrom = start - takeaway;
+    for (var i = 0; i < start; i++) {
+      (function (i) {
+        var block = document.createElement('div');
+        block.className = 'block';
+        block.style.setProperty('--d', (i * 0.02) + 's');
+        block.style.pointerEvents = 'none';
+        blockRow.appendChild(block);
+        if (i < removedFrom) {
+          setTimeout(function () {
+            block.classList.add('filled');
+            block.innerHTML = '<span class="chip" style="background:' + group.color + '"><span class="emoji">' + group.emoji + '</span></span>';
+          }, i * 15 + 340);
+        }
+      })(i);
+    }
+  }
+
+  function newQuizQuestion() {
+    quiz.answered = false;
+    quiz.kind = pickQuizKind();
+    var distractor;
+
+    if (quiz.kind === 'add') {
+      quiz.a = 1 + Math.floor(Math.random() * 9);
+      quiz.b = 1 + Math.floor(Math.random() * 9);
+      quiz.correct = quiz.a + quiz.b;
+      quizPrompt.textContent = quiz.a + ' + ' + quiz.b + ' = ?';
+      var addCandidates = [quiz.correct + 1, quiz.correct - 1, Math.abs(quiz.a - quiz.b)]
+        .filter(function (v) { return v >= 0 && v !== quiz.correct; });
+      distractor = addCandidates[Math.floor(Math.random() * addCandidates.length)];
+      renderQuizAddBlocks(quiz.a, quiz.b);
+    } else {
+      quiz.start = 2 + Math.floor(Math.random() * 9);
+      quiz.takeaway = 1 + Math.floor(Math.random() * (quiz.start - 1));
+      quiz.correct = quiz.start - quiz.takeaway;
+      quizPrompt.textContent = quiz.start + ' − ' + quiz.takeaway + ' = ?';
+      var subCandidates = [quiz.start + quiz.takeaway, quiz.correct + 1, quiz.correct - 1]
+        .filter(function (v) { return v >= 0 && v !== quiz.correct; });
+      distractor = subCandidates[Math.floor(Math.random() * subCandidates.length)];
+      renderQuizSubBlocks(quiz.start, quiz.takeaway);
+    }
+
+    var options = Math.random() < 0.5 ? [quiz.correct, distractor] : [distractor, quiz.correct];
+    quizOptA.textContent = options[0];
+    quizOptB.textContent = options[1];
+    quizOptA.classList.remove('correct', 'wrong');
+    quizOptB.classList.remove('correct', 'wrong');
+    quizOptA.disabled = false;
+    quizOptB.disabled = false;
+    quizFeedback.textContent = ' ';
+  }
+
+  function checkQuizAnswer(value, btn) {
+    if (quiz.answered) return;
+    if (value === quiz.correct) {
+      quiz.answered = true;
+      btn.classList.add('correct');
+      quiz.stars++;
+      updateQuizScore();
+      var promptText = quizPrompt.textContent;
+      quizFeedback.textContent = '🎉 Yes! ' + promptText.replace('?', String(quiz.correct));
+      beep(1, 1);
+      speak('Yes! The answer is ' + quiz.correct + '!');
+      quizOptA.disabled = true;
+      quizOptB.disabled = true;
+      if (!reduceMotion) {
+        runConfetti();
+        setTimeout(stopConfetti, 1800);
+      }
+      setTimeout(newQuizQuestion, 1700);
+    } else {
+      btn.classList.add('wrong');
+      quizFeedback.textContent = 'Not quite — try again!';
+      speak('Try again!');
+      setTimeout(function () { btn.classList.remove('wrong'); }, 450);
+    }
+  }
+
+  // ---------- CONFETTI ----------
+
+  var confettiRAF = null;
+  function runConfetti() {
+    var ctx = confettiCanvas.getContext('2d');
+    var w = confettiCanvas.width = window.innerWidth;
+    var h = confettiCanvas.height = window.innerHeight;
+    var particles = [];
+    for (var i = 0; i < 90; i++) {
+      particles.push({
+        x: Math.random() * w,
+        y: -20 - Math.random() * h * 0.5,
+        r: 4 + Math.random() * 5,
+        c: PALETTE[Math.floor(Math.random() * PALETTE.length)],
+        vy: 2 + Math.random() * 3,
+        vx: (Math.random() - 0.5) * 2,
+        rot: Math.random() * Math.PI,
+        vrot: (Math.random() - 0.5) * 0.3
+      });
+    }
+    function tick() {
+      ctx.clearRect(0, 0, w, h);
+      particles.forEach(function (p) {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.vrot;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.fillStyle = p.c;
+        ctx.fillRect(-p.r / 2, -p.r / 2, p.r, p.r * 0.6);
+        ctx.restore();
+      });
+      confettiRAF = requestAnimationFrame(tick);
+    }
+    tick();
+  }
+  function stopConfetti() {
+    if (confettiRAF) cancelAnimationFrame(confettiRAF);
+    confettiRAF = null;
+    var ctx = confettiCanvas.getContext('2d');
+    ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+  }
+
+  // ---------- WIRE UP ----------
+
+  autoBtn.addEventListener('click', function () {
+    if (state.mode === 'add') autoAdd();
+    else if (state.mode === 'sub') autoSub();
+  });
+
+  resetBtn.addEventListener('click', function () {
+    if (state.mode === 'add') { selectA(state.add.a); selectB(state.add.b); }
+    else if (state.mode === 'sub') { selectStart(state.sub.start); selectTakeaway(state.sub.takeaway); }
+  });
+
+  themeBtn.addEventListener('click', function () {
+    state.pairSetIndex = (state.pairSetIndex + 1) % PAIR_SETS.length;
+    themeBtn.textContent = pairSet().a.emoji + pairSet().b.emoji + ' ' + pairSet().name;
+    if (state.mode === 'add') { selectA(state.add.a); selectB(state.add.b); }
+    else if (state.mode === 'sub') { selectStart(state.sub.start); selectTakeaway(state.sub.takeaway); }
+  });
+
+  soundBtn.addEventListener('click', function () {
+    state.soundOn = !state.soundOn;
+    soundBtn.textContent = state.soundOn ? '🔊 Sound on' : '🔇 Sound off';
+    soundBtn.setAttribute('aria-pressed', String(state.soundOn));
+    if (!state.soundOn && window.speechSynthesis) window.speechSynthesis.cancel();
+  });
+
+  quizOptA.addEventListener('click', function () {
+    checkQuizAnswer(parseInt(quizOptA.textContent, 10), quizOptA);
+  });
+  quizOptB.addEventListener('click', function () {
+    checkQuizAnswer(parseInt(quizOptB.textContent, 10), quizOptB);
+  });
+
+  modeAddBtn.addEventListener('click', function () { setMode('add'); });
+  modeSubBtn.addEventListener('click', function () { setMode('sub'); });
+  modeQuizBtn.addEventListener('click', function () { setMode('quiz'); });
+
+  buildNumberPicker(pickerA, 0, 10, selectA);
+  buildNumberPicker(pickerB, 0, 10, selectB);
+  buildNumberPicker(pickerStart, 1, 10, selectStart);
+  buildTakeawayPicker();
+
+  themeBtn.textContent = pairSet().a.emoji + pairSet().b.emoji + ' ' + pairSet().name;
+  selectA(state.add.a);
+  selectB(state.add.b);
+  updateQuizScore();
+})();
+</script>

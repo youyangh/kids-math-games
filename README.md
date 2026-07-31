@@ -11,6 +11,11 @@ Free, playful browser games for teaching young kids math concepts. No install, n
 
 Tap-to-count game exploring square numbers (1×1 through 10×10). Includes a Quiz Time mode with two-choice questions, spoken numbers, and a per-number character/emoji theme.
 
+### ➕ Add & Take Away
+`/add-and-take-away/`
+
+Tap-to-count addition (two groups combine) and subtraction (tap blocks to take them away) for numbers 0–10, plus a Quiz Time mode mixing both operations with two-choice questions.
+
 ## Adding a new game
 
 1. Create a new folder at the repo root (e.g. `/addition-race/`) with a self-contained `index.html`.
